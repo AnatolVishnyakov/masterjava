@@ -4,10 +4,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * gkislin
- * 03.07.2016
- */
 public class MainMatrix {
     private static final int MATRIX_SIZE = 1000;
     private static final int THREAD_NUMBER = 10;

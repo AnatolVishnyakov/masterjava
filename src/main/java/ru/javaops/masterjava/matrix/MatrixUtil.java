@@ -4,10 +4,6 @@ import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 
-/**
- * gkislin
- * 03.07.2016
- */
 public class MatrixUtil {
 
     // TODO implement parallel multiplication matrixA*matrixB

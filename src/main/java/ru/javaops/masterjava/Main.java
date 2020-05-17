@@ -1,9 +1,6 @@
 package ru.javaops.masterjava;
 
 /**
- * User: gkislin
- * Date: 05.08.2015
- *
  * @link http://caloriesmng.herokuapp.com/
  * @link https://github.com/JavaOPs/topjava
  */
