@@ -112,6 +112,25 @@ public class MatrixUtil {
         return matrixC;
     }
 
+    public static int[][] singleThreadMultiplyOpt2(int[][] matrixA, int[][] matrixB) {
+        final int matrixSize = matrixA.length;
+        final int[][] matrixC = new int[matrixSize][matrixSize];
+
+        for (int row = 0; row < matrixSize; row++) {
+            final int[] rowA = matrixA[row];
+            final int[] rowC = matrixC[row];
+
+            for (int idx = 0; idx < matrixSize; idx++) {
+                final int elA = rowA[idx];
+                final int[] rowB = matrixB[idx];
+                for (int col = 0; col < matrixSize; col++) {
+                    rowC[col] += elA * rowB[col];
+                }
+            }
+        }
+        return matrixC;
+    }
+
     public static int[][] create(int size) {
         int[][] matrix = new int[size][size];
         Random rn = new Random();
