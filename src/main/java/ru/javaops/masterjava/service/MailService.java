@@ -6,7 +6,6 @@ import java.util.Set;
 
 public class MailService {
     private static final String OK = "OK";
-
     private static final String INTERRUPTED_BY_FAULTS_NUMBER = "+++ Interrupted by faults number";
     private static final String INTERRUPTED_BY_TIMEOUT = "+++ Interrupted by timeout";
     private static final String INTERRUPTED_EXCEPTION = "+++ InterruptedException";
@@ -17,7 +16,7 @@ public class MailService {
 
 
     // dummy realization
-    public MailResult sendToUser(String template, String email) throws Exception {
+    public MailResult sendToUser(String template, String email) {
         try {
             Thread.sleep(500);  //delay
         } catch (InterruptedException e) {
