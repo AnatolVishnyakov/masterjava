@@ -93,6 +93,7 @@ public class MainXml {
                     }
                 }
             }
+            users.sort(String::compareTo);
             return users;
         }
     }
