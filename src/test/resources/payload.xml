@@ -3,27 +3,28 @@
          xsi:schemaLocation="http://javaops.ru payload.xsd">
     <Projects>
         <Project name="topjava">
-            <description>Project description</description>
-            <Group name="topjava01" type="CURRENT"/>
-            <Group name="topjava02" type="FINISHED"/>
+            <description>Topjava</description>
+            <Group name="topjava06" type="FINISHED"/>
+            <Group name="topjava07" type="FINISHED"/>
+            <Group name="topjava08" type="CURRENT"/>
         </Project>
         <Project name="masterjava">
-            <description>Project description</description>
+            <description>Masterjava</description>
             <Group name="masterjava01" type="CURRENT"/>
-            <Group name="masterjava02" type="FINISHED"/>
-            <Group name="masterjava03" type="REGISTERING"/>
         </Project>
     </Projects>
     <Cities>
         <City id="spb">Санкт-Петербург</City>
+        <City id="mow">Москва</City>
         <City id="kiv">Киев</City>
         <City id="mnsk">Минск</City>
     </Cities>
     <Users>
-        <User flag="active" city="kiv" email="gmail@gmail.com" groupRefs="masterjava01 topjava02">Full Name</User>
-        <User flag="superuser" city="spb" email="admin@javaops.ru" groupRefs="masterjava03">Admin</User>
+        <User flag="active" city="kiv" email="gmail@gmail.com" groupRefs="topjava07 masterjava01">Full Name</User>
+        <User flag="superuser" city="spb" email="admin@javaops.ru" groupRefs="topjava07 topjava08 masterjava01">Admin</User>
         <User flag="deleted" city="spb" email="deleted@yandex.ru">Deleted</User>
-        <User flag="active" city="kiv" email="user2@yandex.ru" groupRefs="masterjava01 topjava01">User2</User>
+        <User flag="active" city="mow" email="user1@gmail.com" groupRefs="masterjava01 topjava06">User1</User>
+        <User flag="active" city="kiv" email="user2@yandex.ru" groupRefs="masterjava01">User2</User>
         <User flag="active" city="mnsk" email="user3@yandex.ru" groupRefs="masterjava01">User3</User>
     </Users>
 </Payload>

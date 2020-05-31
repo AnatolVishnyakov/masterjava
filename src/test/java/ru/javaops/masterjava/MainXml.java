@@ -1,6 +1,7 @@
 package ru.javaops.masterjava;
 
 import com.google.common.io.Resources;
+import j2html.tags.ContainerTag;
 import ru.javaops.masterjava.xml.schema.ObjectFactory;
 import ru.javaops.masterjava.xml.schema.Payload;
 import ru.javaops.masterjava.xml.schema.Project.Group;
@@ -13,6 +14,8 @@ import javax.xml.stream.events.XMLEvent;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static j2html.TagCreator.*;
 
 public class MainXml {
     public static class JaxbImpl {
@@ -32,7 +35,7 @@ public class MainXml {
             return payload.getProjects().getProject().stream()
                     .filter(proj -> proj.getName().equalsIgnoreCase(projectName))
                     .findFirst()
-                    .orElseThrow(IllegalStateException::new)
+                    .orElseThrow(IllegalArgumentException::new)
                     .getGroup().stream()
                     .map(Group::getName)
                     .collect(Collectors.toSet());
@@ -49,11 +52,25 @@ public class MainXml {
                     .collect(Collectors.toList());
         }
 
-        private List<User> filterUsers(String projectName) {
+        private Set<User> filterUsers(String projectName) {
             Set<String> groups = findGroup(projectName);
             return filterUsers(groups).stream()
-                    .sorted(Comparator.comparing(User::getValue))
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(User::getValue).thenComparing(User::getEmail))));
+        }
+
+        private static String toHtml(Set<User> users, String projectName) {
+            final ContainerTag table = table().with(
+                    tr().with(th("FullName"), th("email")))
+                    .attr("border", "1")
+                    .attr("cellpadding", "8")
+                    .attr("cellspacing", "0");
+
+            users.forEach(u -> table.with(tr().with(td(u.getValue()), td(u.getEmail()))));
+
+            return html().with(
+                    head().with(title(projectName + " users")),
+                    body().with(h1(projectName + " users"), table)
+            ).render();
         }
     }
 
@@ -99,9 +116,10 @@ public class MainXml {
     }
 
     public static void main(String[] args) throws Exception {
-        List<User> users1 = new JaxbImpl().filterUsers("topjava");
+        JaxbImpl jaxb = new JaxbImpl();
+        Set<User> users1 = jaxb.filterUsers("topjava");
         System.out.println(":: JAXB ::");
-        users1.forEach(user -> System.out.println(user.getValue()));
+        System.out.println(jaxb.toHtml(users1, "topjava"));
 
         System.out.println("\n:: StAX ::");
         List<String> users2 = new StAXImpl().filterUsers("topjava");

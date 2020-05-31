@@ -55,7 +55,7 @@
         <xs:complexType>
             <xs:simpleContent>
                 <xs:extension base="xs:string">
-                    <xs:attribute type="xs:string" name="email"/>
+                    <xs:attribute type="emailAddressType" name="email"/>
                     <xs:attribute type="flagType" name="flag" use="required"/>
                     <xs:attribute type="xs:IDREF" name="city" use="required"/>
                     <xs:attribute type="xs:IDREFS" name="groupRefs"/>
@@ -87,4 +87,11 @@
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
+
+    <!--http://stackoverflow.com/a/2147904/548473    -->
+    <xs:simpleType name="emailAddressType">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="([0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})"/>
+        </xs:restriction>
+    </xs:simpleType>
 </xs:schema>
