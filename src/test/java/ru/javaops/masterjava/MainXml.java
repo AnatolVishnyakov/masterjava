@@ -115,6 +115,8 @@ public class MainXml {
         }
     }
 
+    private static final Comparator<User> USER_COMPARATOR = Comparator.comparing(User::getValue).thenComparing(User::getEmail);
+
     public static void main(String[] args) throws Exception {
         JaxbImpl jaxb = new JaxbImpl();
         Set<User> users1 = jaxb.filterUsers("topjava");
