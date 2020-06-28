@@ -9,7 +9,7 @@
             <xs:sequence>
                 <xs:element name="Projects">
                     <xs:complexType>
-                        <xs:sequence minOccurs="1" maxOccurs="unbounded">
+                        <xs:sequence maxOccurs="unbounded">
                             <xs:element ref="Project"/>
                         </xs:sequence>
                     </xs:complexType>
@@ -36,7 +36,7 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element type="xs:string" name="description"/>
-                <xs:sequence minOccurs="1" maxOccurs="unbounded">
+                <xs:sequence maxOccurs="unbounded">
                     <xs:element name="Group">
                         <xs:complexType>
                             <xs:attribute type="xs:ID" name="name" use="required"/>
