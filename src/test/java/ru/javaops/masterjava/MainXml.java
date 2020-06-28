@@ -121,15 +121,12 @@ public class MainXml {
             Set<User> users = new TreeSet<>(USER_COMPARATOR);
             String element;
 
-            projects:
-            while (processor.doUntil(XMLEvent.START_ELEMENT, PROJECT)) {
+            while (processor.startElement(PROJECT, "Projects")) {
                 if (projectName.equals(processor.getAttribute("name"))) {
-                    while ((element = processor.doUntilAny(XMLEvent.START_ELEMENT, PROJECT, GROUP, USERS)) != null) {
-                        if (!element.equals(GROUP)) {
-                            break projects;
-                        }
+                    while (processor.startElement(GROUP, PROJECT)) {
                         groupNames.add(processor.getAttribute("name"));
                     }
+                    break;
                 }
             }
 
@@ -139,12 +136,12 @@ public class MainXml {
 
             // Users loop
             users = new TreeSet<>(USER_COMPARATOR);
+
+            JaxbParser parser = new JaxbParser(User.class);
             while (processor.doUntil(XMLEvent.START_ELEMENT, "User")) {
                 String groupRefs = processor.getAttribute("groupRefs");
                 if (!Collections.disjoint(groupNames, Splitter.on(' ').splitToList(nullToEmpty(groupRefs)))) {
-                    User user = new User();
-                    user.setEmail(processor.getAttribute("email"));
-                    user.setValue(processor.getText());
+                    User user = parser.unmarshal(processor.getReader(), User.class);
                     users.add(user);
                 }
             }

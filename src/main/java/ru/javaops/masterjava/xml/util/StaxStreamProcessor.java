@@ -15,27 +15,39 @@ public class StaxStreamProcessor implements AutoCloseable {
         reader = FACTORY.createXMLStreamReader(is);
     }
 
+    public boolean startElement(String element, String parent) throws XMLStreamException {
+        while (reader.hasNext()) {
+            int event = reader.next();
+            if (parent != null && isElementEnd(event, parent)) {
+                return false;
+            }
+            if (isElementStart(event, element)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isElementStart(int event, String el) {
+        return event == XMLEvent.START_ELEMENT && el.equals(reader.getLocalName());
+    }
+
+    private boolean isElementEnd(int event, String el) {
+        return event == XMLEvent.END_ELEMENT && el.equals(reader.getLocalName());
+    }
+
     public XMLStreamReader getReader() {
         return reader;
     }
 
     public boolean doUntil(int stopEvent, String value) throws XMLStreamException {
-        return doUntilAny(stopEvent, value) != null;
-    }
-
-    public String doUntilAny(int stopEvent, String... values) throws XMLStreamException {
         while (reader.hasNext()) {
             int event = reader.next();
-            if (event == stopEvent) {
-                String xmlValue = getValue(event);
-                for (String value : values) {
-                    if (value.equals(xmlValue)) {
-                        return xmlValue;
-                    }
-                }
+            if (event == stopEvent && value.equals(getValue(event))) {
+                return true;
             }
         }
-        return null;
+        return false;
     }
 
     public String getValue(int event) {
@@ -52,21 +64,6 @@ public class StaxStreamProcessor implements AutoCloseable {
 
     public String getText() throws XMLStreamException {
         return reader.getElementText();
-    }
-
-    public boolean startElement(String element, String parent) throws XMLStreamException {
-        while (reader.hasNext()) {
-            int event = reader.next();
-            if (parent != null && event == XMLEvent.END_ELEMENT &&
-                    parent.equals(reader.getLocalName())) {
-                return false;
-            }
-            if (event == XMLEvent.START_ELEMENT &&
-                    element.equals(reader.getLocalName())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override
