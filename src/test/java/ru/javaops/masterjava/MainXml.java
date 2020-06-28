@@ -1,5 +1,6 @@
 package ru.javaops.masterjava;
 
+import com.google.common.base.Splitter;
 import com.google.common.io.Resources;
 import j2html.tags.ContainerTag;
 import one.util.streamex.StreamEx;
@@ -22,11 +23,15 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.google.common.base.Strings.nullToEmpty;
 import static j2html.TagCreator.*;
 
 public class MainXml {
     private static final Comparator<User> USER_COMPARATOR = Comparator.comparing(User::getValue)
             .thenComparing(User::getEmail);
+    private static final String PROJECT = "Project";
+    private static final String GROUP = "Group";
+    private static final String USERS = "User";
 
     public static class StAXImpl {
         private Set<String> findGroup(String projectName) {
@@ -109,15 +114,55 @@ public class MainXml {
         }
     }
 
+    private static Set<User> processByStax(String projectName, URL payloadUrl) throws Exception {
+        try (InputStream is = payloadUrl.openStream()) {
+            StaxStreamProcessor processor = new StaxStreamProcessor(is);
+            Set<String> groupNames = new HashSet<>();
+            Set<User> users = new TreeSet<>(USER_COMPARATOR);
+            String element;
+
+            projects:
+            while (processor.doUntil(XMLEvent.START_ELEMENT, PROJECT)) {
+                if (projectName.equals(processor.getAttribute("name"))) {
+                    while ((element = processor.doUntilAny(XMLEvent.START_ELEMENT, PROJECT, GROUP, USERS)) != null) {
+                        if (!element.equals(GROUP)) {
+                            break projects;
+                        }
+                        groupNames.add(processor.getAttribute("name"));
+                    }
+                }
+            }
+
+            if (groupNames.isEmpty()) {
+                throw new IllegalArgumentException("Invalid " + projectName + " or no groups");
+            }
+
+            // Users loop
+            users = new TreeSet<>(USER_COMPARATOR);
+            while (processor.doUntil(XMLEvent.START_ELEMENT, "User")) {
+                String groupRefs = processor.getAttribute("groupRefs");
+                if (!Collections.disjoint(groupNames, Splitter.on(' ').splitToList(nullToEmpty(groupRefs)))) {
+                    User user = new User();
+                    user.setEmail(processor.getAttribute("email"));
+                    user.setValue(processor.getText());
+                    users.add(user);
+                }
+            }
+            return users;
+        }
+    }
+
     public static void main(String[] args) throws Exception {
-        Set<User> users = parseByJaxb("masterjava", Resources.getResource("payload.xml"));
+        String projectName = "masterjava";
+        URL payloadUrl = Resources.getResource("payload.xml");
+
+        Set<User> users = parseByJaxb(projectName, payloadUrl);
         users.forEach(System.out::println);
 
-        String html = outHtml(users, "masterjava", Paths.get("out/usersJaxb.html"));
+        String html = outHtml(users, projectName, Paths.get("out/usersJaxb.html"));
         System.out.println(html);
 
-//        System.out.println("\n:: StAX ::");
-//        List<String> users2 = new StAXImpl().filterUsers("topjava");
-//        users2.forEach(System.out::println);
+        users = processByStax(projectName, payloadUrl);
+        users.forEach(System.out::println);
     }
 }
