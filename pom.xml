@@ -27,10 +27,8 @@
         <module>upload</module>
         <module>common</module>
         <module>test</module>
-<!--
-        <module>webapp</module>
         <module>mail-service</module>
         <module>mail-api</module>
--->
+        <module>webapp</module>
     </modules>
 </project>
