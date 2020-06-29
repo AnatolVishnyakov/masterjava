@@ -20,15 +20,13 @@
         </plugins>
     </build>
 
-    <name>Master Java</name>
+    <name>Masterjava Root</name>
     <url>https://github.com/JavaOPs/masterjava</url>
 
     <modules>
-        <module>upload</module>
         <module>common</module>
         <module>test</module>
-        <module>mail-service</module>
-        <module>mail-api</module>
-        <module>webapp</module>
+        <module>web</module>
+        <module>services</module>
     </modules>
 </project>
