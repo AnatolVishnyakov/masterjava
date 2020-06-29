@@ -6,11 +6,26 @@
 
     <parent>
         <groupId>ru.javaops</groupId>
-        <artifactId>web</artifactId>
+        <artifactId>parent-web</artifactId>
+        <relativePath>../../parent-web/pom.xml</relativePath>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>upload</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
     <name>Upload</name>
+
+    <build>
+        <finalName>upload</finalName>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.j2html</groupId>
+            <artifactId>j2html</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+    </dependencies>
+
 </project>
