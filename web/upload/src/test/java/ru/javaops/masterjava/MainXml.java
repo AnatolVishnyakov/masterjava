@@ -8,10 +8,7 @@ import ru.javaops.masterjava.xml.schema.ObjectFactory;
 import ru.javaops.masterjava.xml.schema.Payload;
 import ru.javaops.masterjava.xml.schema.Project;
 import ru.javaops.masterjava.xml.schema.User;
-import ru.javaops.masterjava.xml.util.JaxbParser;
-import ru.javaops.masterjava.xml.util.Schemas;
-import ru.javaops.masterjava.xml.util.StaxStreamProcessor;
-import ru.javaops.masterjava.xml.util.XsltProcessor;
+import ru.javaops.masterjava.xml.util.*;
 
 import javax.xml.stream.events.XMLEvent;
 import java.io.IOException;
@@ -32,54 +29,13 @@ public class MainXml {
             .thenComparing(User::getEmail);
     private static final String PROJECT = "Project";
     private static final String GROUP = "Group";
-    private static final String USERS = "User";
-
-    public static class StAXImpl {
-        private Set<String> findGroup(String projectName) {
-            Set<String> groups = new HashSet<>(3);
-            URL resource = Resources.getResource("payload.xml");
-            try (StaxStreamProcessor processor = new StaxStreamProcessor(resource.openStream())) {
-                while (processor.doUntil(XMLEvent.START_ELEMENT, "Project")) {
-                    String attribute = processor.getAttribute("name");
-                    if (attribute != null && attribute.equalsIgnoreCase(projectName)) {
-                        while (processor.startElement("Group", "Project")) {
-                            attribute = processor.getAttribute("name");
-                            groups.add(attribute);
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return groups;
-        }
-
-        public List<String> filterUsers(String projectName) throws Exception {
-            Set<String> groups = findGroup(projectName);
-            List<String> users = new ArrayList<>();
-            URL resource = Resources.getResource("payload.xml");
-            try (StaxStreamProcessor processor = new StaxStreamProcessor(resource.openStream())) {
-                while (processor.startElement("User", "Users")) {
-                    String[] attributes = Optional.ofNullable(processor.getAttribute("groupRefs"))
-                            .orElse("")
-                            .split(" ");
-                    if (Arrays.stream(attributes).anyMatch(groups::contains)) {
-                        String email = processor.getAttribute("email");
-                        String fullName = processor.getText();
-                        users.add(fullName + "/" + email);
-                    }
-                }
-            }
-            users.sort(String::compareTo);
-            return users;
-        }
-    }
 
     private static Set<User> parseByJaxb(String projectName, URL payloadUrl) throws Exception {
         JaxbParser parser = new JaxbParser(ObjectFactory.class);
+        JaxbUnmarshaller unmarshaller = parser.createUnmarshaller();
         parser.setSchema(Schemas.ofClasspath("payload.xsd"));
         try (InputStream is = payloadUrl.openStream()) {
-            Payload payload = parser.unmarshal(is);
+            Payload payload = unmarshaller.unmarshal(is);
             Project project = StreamEx.of(payload.getProjects().getProject())
                     .filter(p -> p.getName().equals(projectName))
                     .findAny()
@@ -119,8 +75,6 @@ public class MainXml {
         try (InputStream is = payloadUrl.openStream()) {
             StaxStreamProcessor processor = new StaxStreamProcessor(is);
             Set<String> groupNames = new HashSet<>();
-            Set<User> users = new TreeSet<>(USER_COMPARATOR);
-            String element;
 
             while (processor.startElement(PROJECT, "Projects")) {
                 if (projectName.equals(processor.getAttribute("name"))) {
@@ -136,13 +90,14 @@ public class MainXml {
             }
 
             // Users loop
-            users = new TreeSet<>(USER_COMPARATOR);
+            Set<User> users = new TreeSet<>(USER_COMPARATOR);
 
-            JaxbParser parser = new JaxbParser(User.class);
+            JaxbParser parser = new JaxbParser(ObjectFactory.class);
+            JaxbUnmarshaller unmarshaller = parser.createUnmarshaller();
             while (processor.doUntil(XMLEvent.START_ELEMENT, "User")) {
                 String groupRefs = processor.getAttribute("groupRefs");
                 if (!Collections.disjoint(groupNames, Splitter.on(' ').splitToList(nullToEmpty(groupRefs)))) {
-                    User user = parser.unmarshal(processor.getReader(), User.class);
+                    User user = unmarshaller.unmarshal(processor.getReader(), User.class);
                     users.add(user);
                 }
             }
