@@ -25,14 +25,12 @@ public class UserDaoTest extends AbstractDaoTest<UserDao> {
     }
 
     @Test
-    @Ignore("Lock базы")
     public void getWithLimit() {
         List<User> users = dao.getWithLimit(5);
         Assert.assertEquals(FIST5_USERS, users);
     }
 
     @Test
-    @Ignore("Lock базы")
     public void insertBatch() throws Exception {
         dao.clean();
         dao.insertBatch(FIST5_USERS, 3);
@@ -40,7 +38,6 @@ public class UserDaoTest extends AbstractDaoTest<UserDao> {
     }
 
     @Test
-    @Ignore("Lock базы")
     public void getSeqAndSkip() throws Exception {
         int seq1 = dao.getSeqAndSkip(5);
         int seq2 = dao.getSeqAndSkip(1);
