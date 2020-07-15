@@ -7,8 +7,8 @@ import java.sql.DriverManager;
 
 public class DBITestProvider {
     public static void initDBI() {
-        Config db = Configs.getConfig("/apps/masterjava/config/persist.conf","db");
-        initDBI(db.getString("url"), db.getString("postgres"), db.getString("password"));
+        Config db = Configs.getConfig("persist.conf","db");
+        initDBI(db.getString("url"), db.getString("user"), db.getString("password"));
     }
 
     public static void initDBI(String dbUrl, String dbUser, String dbPassword) {

@@ -38,6 +38,7 @@ public class UserDaoTest extends AbstractDaoTest<UserDao> {
     }
 
     @Test
+    @Ignore
     public void getSeqAndSkip() throws Exception {
         int seq1 = dao.getSeqAndSkip(5);
         int seq2 = dao.getSeqAndSkip(1);
