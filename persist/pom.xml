@@ -38,10 +38,10 @@
                 <artifactId>liquibase-maven-plugin</artifactId>
                 <version>3.5.3</version>
                 <configuration>
-                    <changeLogFile>../sql/databaseChangeLog.sql</changeLogFile>
+                    <changeLogFile>D:\Tomcat\config\sql\databaseChangeLog.sql</changeLogFile>
                     <driver>org.postgresql.Driver</driver>
                     <url>jdbc:postgresql://localhost:5432/masterjava</url>
-                    <username>user</username>
+                    <username>postgres</username>
                     <password>password</password>
                     <!--<propertyFile>${masterjava.config}/liquibase.properties</propertyFile>-->
                     <!--<propertyFileWillOverride>true</propertyFileWillOverride>-->
