@@ -125,10 +125,10 @@
     </dependencyManagement>
 
     <scm>
-        <connection>scm:git:https://github.com/JavaWebinar/masterjava.git</connection>
-        <developerConnection>scm:git:https://github.com/JavaWebinar/masterjava.git</developerConnection>
+        <connection>scm:git:https://github.com/AnatolVishnyakov/masterjava.git</connection>
+        <developerConnection>scm:git:https://github.com/AnatolVishnyakov/masterjava.git</developerConnection>
         <tag>HEAD</tag>
-        <url>https://github.com/vitchurb/masterjava.git</url>
+        <url>https://github.com/AnatolVishnyakov/masterjava.git</url>
     </scm>
 
 </project>
