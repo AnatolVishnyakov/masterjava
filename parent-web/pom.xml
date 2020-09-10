@@ -16,6 +16,10 @@
     <version>1.0-SNAPSHOT</version>
     <name>Parent Web</name>
 
+    <properties>
+        <maven.resources.overwrite>true</maven.resources.overwrite>
+    </properties>
+
     <build>
         <plugins>
             <!--  http://stackoverflow.com/questions/4305935/is-it-possible-to-supply-tomcat6s-context-xml-file-via-the-maven-cargo-plugin#4417945 -->
